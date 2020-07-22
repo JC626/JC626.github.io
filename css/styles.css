@@ -647,3 +647,15 @@ form .row:first-child .floating-label-form-group {
 .copyright {
   background-color: #1a252f;
 }
+
+/* Added styling */
+
+.skill-scale-table {
+  color: white;
+}
+
+.skill-scale-table td {
+  border-style: solid;
+  border-color: white;
+  border-width: 0px 4px 5px 4px;
+}
