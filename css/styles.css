@@ -654,8 +654,31 @@ form .row:first-child .floating-label-form-group {
   color: white;
 }
 
+.skill-scale-table th {
+  border-style: solid;
+  border-color: white;
+  border-width: 5px;
+}
+
+.skill-top-row {
+  border-style: solid;
+  border-color: white;
+  border-width: 5px 5px 0px 5px;
+}
+
 .skill-scale-table td {
   border-style: solid;
   border-color: white;
-  border-width: 0px 4px 5px 4px;
+  border-width: 0px 5px 0px 5px;
+}
+
+.skills-logo-img {
+  height: 80px;
+  width: 80px;
+}
+
+
+/* Fix flickering tooltip */
+.tooltip{
+  pointer-events:none;
 }
