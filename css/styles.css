@@ -683,6 +683,12 @@ form .row:first-child .floating-label-form-group {
   background-color: #563d7c;
 }
 
+#bootstrap-logo-text > h4,
+#powerbi-logo-text > h4 {
+  margin-bottom: 0px;
+  text-align: center;
+}
+
 #bootstrap-logo-text > h4 > a{
   color: white;
 }
