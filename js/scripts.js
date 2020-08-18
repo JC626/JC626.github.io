@@ -72,6 +72,8 @@
         });
       }
 
+    // Other tooltips
+    $('[data-toggle="tooltip"]').tooltip()
 
     })
 
