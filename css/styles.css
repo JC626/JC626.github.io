@@ -652,12 +652,7 @@ form .row:first-child .floating-label-form-group {
 
 .skill-scale-table {
   color: white;
-}
-
-.skill-scale-table th {
-  border-style: solid;
-  border-color: white;
-  border-width: 5px;
+  table-layout: fixed;
 }
 
 .skill-top-row {
@@ -666,20 +661,23 @@ form .row:first-child .floating-label-form-group {
   border-width: 5px 5px 0px 5px;
 }
 
+.skill-scale-table th {
+  border-style: solid;
+  border-color: white;
+  border-width: 5px;
+  overflow: hidden;
+}
+
 .skill-scale-table td {
   border-style: solid;
   border-color: white;
   border-width: 0px 5px 0px 5px;
+  overflow: hidden;
 }
 
-.skills-logo-img-square {
-  height: 80px;
-  width: 80px;
-}
-
-.skills-logo-img-horizontal {
-  height: 80px;
-  width: 160px;
+.skills-logo-img {
+  height: 100%;
+  width: 100%;
 }
 
 #bootstrap-logo-text{
