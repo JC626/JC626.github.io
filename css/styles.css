@@ -672,9 +672,14 @@ form .row:first-child .floating-label-form-group {
   border-width: 0px 5px 0px 5px;
 }
 
-.skills-logo-img {
+.skills-logo-img-square {
   height: 80px;
   width: 80px;
+}
+
+.skills-logo-img-horizontal {
+  height: 80px;
+  width: 160px;
 }
 
 #bootstrap-logo-text{
