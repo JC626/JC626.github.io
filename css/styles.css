@@ -651,26 +651,26 @@ form .row:first-child .floating-label-form-group {
 /* Added styling */
 
 .skill-scale-table {
-  color: white;
   table-layout: fixed;
+  background-color: #e6e6e6;
 }
 
 .skill-top-row {
   border-style: solid;
-  border-color: white;
+  border-color: #212529;
   border-width: 5px 5px 0px 5px;
 }
 
 .skill-scale-table th {
   border-style: solid;
-  border-color: white;
+  border-color: #212529;
   border-width: 5px;
   overflow: hidden;
 }
 
 .skill-scale-table td {
   border-style: solid;
-  border-color: white;
+  border-color: #212529;
   border-width: 0px 5px 0px 5px;
   overflow: hidden;
 }
