@@ -677,11 +677,13 @@ form .row:first-child .floating-label-form-group {
   border-color: #212529;
   border-width: 0px 5px 0px 5px;
   overflow: hidden;
+  vertical-align: middle;
 }
 
 .skills-logo-img {
   height: 100%;
   width: 100%;
+  vertical-align: middle;
 }
 
 #bootstrap-logo-text{
