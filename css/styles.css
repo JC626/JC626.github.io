@@ -670,6 +670,7 @@ form .row:first-child .floating-label-form-group {
   border-color: #212529;
   border-width: 5px;
   overflow: hidden;
+  padding: 0.5rem;
 }
 
 .skill-scale-table td {
@@ -677,6 +678,7 @@ form .row:first-child .floating-label-form-group {
   border-color: #212529;
   border-width: 0px 5px 0px 5px;
   overflow: hidden;
+  padding: 0.5rem;
   vertical-align: middle;
 }
 
@@ -715,4 +717,43 @@ form .row:first-child .floating-label-form-group {
 /* Fix flickering tooltip */
 .tooltip{
   pointer-events:none;
+}
+
+/* Media queries */
+
+@media (max-width: 767.5px) {
+  #bootstrap-logo-text > h4,
+  #powerbi-logo-text > h4 {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 575.98px) {
+     .skill-scale-table th {
+         font-size: 14px;
+     }
+     #bootstrap-logo-text > h4,
+     #powerbi-logo-text > h4 {
+       font-size: 16px;
+     }
+}
+
+@media (max-width: 450px) {
+     .skill-scale-table th {
+         font-size: 12px;
+     }
+     #bootstrap-logo-text > h4,
+     #powerbi-logo-text > h4 {
+       font-size: 14px;
+     }
+}
+
+@media (max-width: 400px) {
+     .skill-scale-table th {
+         font-size: 10px;
+     }
+     #bootstrap-logo-text > h4,
+     #powerbi-logo-text > h4 {
+       font-size: 12px;
+     }
 }
