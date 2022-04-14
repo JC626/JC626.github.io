@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Snake</title>
+  <!-- Favicon-->
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+  <link rel="manifest" href="images/site.webmanifest">
+  <!-- Google fonts-->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Heebo:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+  <!-- CSS Styling-->
+  <link href="../css/bootstrap.css" rel="stylesheet" />
+  <link href="../css/style.css" rel="stylesheet" />
+  <!-- <style>
+  #gameCanvas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style> -->
+</head>
+
+<body>
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#arcadeModal">
+  Arcade
+</button>
+
+  <div class="modal fade" id="arcadeModal" tabindex="-1" role="dialog" aria-labelledby="arcade" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Arcade</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"><i class="fas fa-times"></i></span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+                <div class="col-4">
+                  <div class="card" style="width: 18rem;">
+                    <img src="../images/snake.png" class="card-img-top" alt="snake">
+                    <div class="card-body">
+                      <h5 class="card-title">Snake</h5>
+                      <button id="openSnakeBtn" class="btn btn-primary">Play</button>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="snakeModal" tabindex="-1" role="dialog" aria-labelledby="snake-game" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Snake</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"><i class="fas fa-times"></i></span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="d-flex justify-content-center">
+              <p class="mb-2"><button class="btn btn-primary" id="snakeStartBtn">Play Snake</button></p>
+              <h3 id="snakeScoreHeading" class="d-none">Score: <span id="snakeScore">0</span></h3>
+            </div>
+            <div class="d-flex justify-content-center">
+              <p>Use the arrow keys to turn your snake so you can eat lots of fruit. <br> If you touch the walls (or eat yourself), its game over!</p>
+            </div>
+            <div class="d-flex justify-content-center">
+              <canvas id="gameCanvas" width="400" height="400">
+              </canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="../js/jquery.js"></script>
+<!-- Bootstrap core JS-->
+<script src="../js/bootstrap.js"></script>
+<!-- Font Awesome icons (free version)-->
+<script src="../js/fontawesome-free-5.15.1/all.min.js"></script>
+<script>
+  const BOARD_BACKGROUND = "white";
+  const BOARD_BORDER = "black";
+  const PIXEL_LENGTH = 10;
+  const gameBoard = document.getElementById("gameCanvas");
+  const gameBoardCtx = gameBoard.getContext("2d");
+  let snake;
+  let foodMap;
+
+  let dx;
+  let dy;
+
+  let score = 0;
+
+  $("#openSnakeBtn").on("click", function(){
+    $("#arcadeModal").modal("hide");
+    $("#snakeModal").modal("show");
+    // Show default state
+    $("#snakeScoreHeading").addClass("d-none");
+    $("#snakeStartBtn").removeClass("d-none");
+    gameBoardCtx.clearRect(0, 0, gameBoard.width, gameBoard.height);
+  })
+
+  $("#snakeStartBtn").on("click", function (event) {
+    gameBoardCtx.clearRect(0, 0, gameBoard.width, gameBoard.height);
+    $(this).addClass("d-none");
+    $("#snakeScore").removeClass("d-none");
+    resetSnake();
+  })
+
+  function resetSnake(){
+    $("#snakeScoreHeading").removeClass("d-none");
+    score = 0;
+    $("#snakeScore").text(score);
+    // Reset snake's starting position
+    snake = [];
+    let defaultX = gameBoard.width / 2;
+    let defaultY = gameBoard.width / 2;
+    for(let i=0; i < 5; i++){
+      snake.push({x: defaultX - i * PIXEL_LENGTH, y: defaultY});
+    }
+    foodMap = new Map();
+    // Always start the snake moving right
+    dx = PIXEL_LENGTH;
+    dy = 0;
+    // Pause the snake's position momentarily before starting
+    clearBoard();
+    drawSnake();
+    setTimeout(function(){
+      setTimeout(startSnake, 100);
+    }, 100)
+  }
+
+
+  function startSnake(){
+    if(gameOver() || !$("#snakeModal").hasClass("show")){
+      console.log("DOne");
+      if($("#snakeModal").hasClass("show")){
+          // TODO add game over to the screen and "Play again" button.
+      }
+    }
+    else{
+      if(foodMap.size < 1){
+        createFood();
+      }
+      clearBoard();
+      // TODO Randomly add food at different timings
+      for(let foodX of foodMap.keys()){
+        for(let foodY of foodMap.get(foodX)){
+          drawFood(foodX, foodY);
+        }
+      }
+      moveSnake();
+      drawSnake();
+      setTimeout(startSnake, 100);
+    }
+  }
+
+  function drawSnakePart(snakePart) {
+    gameBoardCtx.fillStyle = "lightblue";
+    gameBoardCtx.strokestyle = "darkblue";
+    // TODO would be cool to make the head a different colour
+    gameBoardCtx.fillRect(snakePart.x, snakePart.y, PIXEL_LENGTH, PIXEL_LENGTH);
+    gameBoardCtx.strokeRect(snakePart.x, snakePart.y, PIXEL_LENGTH, PIXEL_LENGTH);
+  }
+
+  function drawSnake() {
+    snake.forEach(drawSnakePart);
+  }
+
+  function clearBoard() {
+    //  Select the colour to fill the drawing
+    gameBoardCtx.fillStyle = BOARD_BACKGROUND;
+    //  Select the colour for the border of the gameBoard
+    gameBoardCtx.strokestyle = BOARD_BORDER;
+    // Draw a "filled" rectangle to cover the entire gameBoard
+    gameBoardCtx.fillRect(0, 0, gameBoard.width, gameBoard.height);
+    // Draw a "border" around the entire gameBoard
+    gameBoardCtx.strokeRect(0, 0, gameBoard.width, gameBoard.height);
+  }
+
+  function moveSnake(){
+    let head = {x: snake[0].x + dx, y: snake[0].y + dy};
+    snake.unshift(head);
+    // Snake has eaten food
+    if(foodMap.has(head.x) && foodMap.get(head.x).has(head.y)){
+      foodMap.get(head.x).delete(head.y);
+      createFood();
+      score++;
+      $("#snakeScore").text(score);
+    }
+    else{
+      snake.pop();
+    }
+  }
+
+
+  document.addEventListener("keydown", changeDirection)
+
+  function changeDirection(event){
+     const LEFT_KEY = 37;
+     const RIGHT_KEY = 39;
+     const UP_KEY = 38;
+     const DOWN_KEY = 40;
+
+     const keyPressed = event.keyCode;
+     const goingUp = dy === -PIXEL_LENGTH;
+     const goingDown = dy === PIXEL_LENGTH;
+     const goingRight = dx === PIXEL_LENGTH;
+     const goingLeft = dx === -PIXEL_LENGTH;
+
+       if (keyPressed === LEFT_KEY && !goingRight){
+            dx = -PIXEL_LENGTH;
+            dy = 0;
+       }
+
+       if (keyPressed === UP_KEY && !goingDown){
+            dx = 0;
+            dy = -PIXEL_LENGTH;
+       }
+
+       if (keyPressed === RIGHT_KEY && !goingLeft){
+            dx = PIXEL_LENGTH;
+            dy = 0;
+       }
+
+       if (keyPressed === DOWN_KEY && !goingUp){
+            dx = 0;
+            dy = PIXEL_LENGTH;
+       }
+  }
+
+  function gameOver(){
+    for (let i = 4; i < snake.length; i++){
+      // Has the snake collided?
+      if (snake[i].x === snake[0].x && snake[i].y === snake[0].y){
+        return true;
+      }
+    }
+    const hitLeftWall = snake[0].x < 0;
+    const hitRightWall = snake[0].x >= gameBoard.width - PIXEL_LENGTH;
+    const hitTopWall = snake[0].y < 0;
+    const hitBottomWall = snake[0].y >= gameBoard.height - PIXEL_LENGTH;
+
+    return hitLeftWall ||  hitRightWall || hitTopWall || hitBottomWall;
+  }
+
+  function createCoordinate(min, max){
+   return Math.round((Math.random() * (max-min) + min) / PIXEL_LENGTH) * PIXEL_LENGTH;
+  }
+
+  function createFood(){
+   let foodX = createCoordinate(0, gameBoard.width - PIXEL_LENGTH);
+   let foodY = createCoordinate(0, gameBoard.height - PIXEL_LENGTH);
+
+   let hasAteFood;
+   snake.forEach(function snakeAteFood(part) {
+      if (part.x === foodX && part.y === foodY){
+        hasAteFood = createFood();
+      }
+   });
+   let foodSet = foodMap.get(foodX) || new Set();
+   if(hasAteFood){
+      if(foodSet.has(foodY)){
+        foodSet.delete(foodY);
+      }
+   }
+   else{
+     foodSet.add(foodY);
+     foodMap.set(foodX, foodSet);
+   }
+   return !hasAteFood;
+  }
+
+  function drawFood(x, y){
+      gameBoardCtx.fillStyle = "lightgreen";
+      gameBoardCtx.strokestyle = "darkgreen";
+      gameBoardCtx.fillRect(x, y, PIXEL_LENGTH, PIXEL_LENGTH);
+      gameBoardCtx.strokeRect(x, y, PIXEL_LENGTH, PIXEL_LENGTH);
+  }
+
+</script>
+</body>
+
+</html>
