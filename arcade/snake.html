@@ -19,14 +19,22 @@
   <!-- CSS Styling-->
   <link href="../css/bootstrap.css" rel="stylesheet" />
   <link href="../css/style.css" rel="stylesheet" />
-  <!-- <style>
-  #gameCanvas {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-</style> -->
+  <style>
+    #game-canvas {
+      position: absolute;
+    }
+
+    #canvas-container {
+      position: relative;
+      width: 400px;
+      height: 400px;
+    }
+    #snake-game-over {
+       position: absolute;
+       top:30%;
+       left:146px;
+    }
+  </style>
 </head>
 
 <body>
@@ -82,8 +90,14 @@
               <p>Use the arrow keys to turn your snake so you can eat lots of fruit. <br> If you touch the walls (or eat yourself), its game over!</p>
             </div>
             <div class="d-flex justify-content-center">
+              <div id="canvas-container">
                 <canvas id="game-canvas" width="400" height="400">
                 </canvas>
+                <div id="snake-game-over" class="d-none">
+                  <h5>Game over!</h5>
+                  <button class="btn btn-primary" onclick="resetSnake();">Play again?</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -152,9 +166,9 @@
 
 
   function startSnake(){
-          // TODO add game over to the screen and "Play again" button.
     if(gameOver() || !$("#snake-modal").hasClass("show")){
       if($("#snake-modal").hasClass("show")){
+        $("#snake-game-over").removeClass("d-none");
       }
     }
     else{
