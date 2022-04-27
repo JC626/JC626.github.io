@@ -169,6 +169,9 @@
     if(gameOver() || !$("#snake-modal").hasClass("show")){
       if($("#snake-modal").hasClass("show")){
         $("#snake-game-over").removeClass("d-none");
+        gameBoardCtx.globalAlpha = 0.1;
+        gameBoardCtx.fillStyle = "grey";
+        gameBoardCtx.fillRect(0, 0, gameBoard.width, gameBoard.height);
       }
     }
     else{
@@ -201,6 +204,7 @@
   }
 
   function clearBoard() {
+    gameBoardCtx.globalAlpha = 1;
     //  Select the colour to fill the drawing
     gameBoardCtx.fillStyle = BOARD_BACKGROUND;
     //  Select the colour for the border of the gameBoard
