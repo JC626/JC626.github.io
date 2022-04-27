@@ -31,11 +31,11 @@
 
 <body>
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#arcadeModal">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#arcade-modal">
   Arcade
 </button>
 
-  <div class="modal fade" id="arcadeModal" tabindex="-1" role="dialog" aria-labelledby="arcade" aria-hidden="true">
+  <div class="modal fade" id="arcade-modal" tabindex="-1" role="dialog" aria-labelledby="arcade" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -52,7 +52,7 @@
                     <img src="../images/snake.png" class="card-img-top" alt="snake">
                     <div class="card-body">
                       <h5 class="card-title">Snake</h5>
-                      <button id="openSnakeBtn" class="btn btn-primary">Play</button>
+                      <button id="open-snake-btn" class="btn btn-primary">Play</button>
                     </div>
                   </div>
                 </div>
@@ -63,7 +63,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="snakeModal" tabindex="-1" role="dialog" aria-labelledby="snake-game" aria-hidden="true">
+  <div class="modal fade" id="snake-modal" tabindex="-1" role="dialog" aria-labelledby="snake-game" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -75,15 +75,15 @@
         <div class="modal-body">
           <div class="container">
             <div class="d-flex justify-content-center">
-              <p class="mb-2"><button class="btn btn-primary" id="snakeStartBtn">Play Snake</button></p>
-              <h3 id="snakeScoreHeading" class="d-none">Score: <span id="snakeScore">0</span></h3>
+              <p class="mb-2"><button class="btn btn-primary" id="snake-start-btn">Play Snake</button></p>
+              <h3 id="snake-score-heading" class="d-none">Score: <span id="snake-score">0</span></h3>
             </div>
             <div class="d-flex justify-content-center">
               <p>Use the arrow keys to turn your snake so you can eat lots of fruit. <br> If you touch the walls (or eat yourself), its game over!</p>
             </div>
             <div class="d-flex justify-content-center">
-              <canvas id="gameCanvas" width="400" height="400">
-              </canvas>
+                <canvas id="game-canvas" width="400" height="400">
+                </canvas>
             </div>
           </div>
         </div>
@@ -100,7 +100,7 @@
   const BOARD_BACKGROUND = "white";
   const BOARD_BORDER = "black";
   const PIXEL_LENGTH = 10;
-  const gameBoard = document.getElementById("gameCanvas");
+  const gameBoard = document.getElementById("game-canvas");
   const gameBoardCtx = gameBoard.getContext("2d");
   let snake;
   let foodMap;
@@ -110,26 +110,27 @@
 
   let score = 0;
 
-  $("#openSnakeBtn").on("click", function(){
-    $("#arcadeModal").modal("hide");
-    $("#snakeModal").modal("show");
+  $("#open-snake-btn").on("click", function(){
+    $("#arcade-modal").modal("hide");
+    $("#snake-modal").modal("show");
     // Show default state
-    $("#snakeScoreHeading").addClass("d-none");
-    $("#snakeStartBtn").removeClass("d-none");
+    $("#snake-score-heading").addClass("d-none");
+    $("#snake-start-btn").removeClass("d-none");
     gameBoardCtx.clearRect(0, 0, gameBoard.width, gameBoard.height);
   })
 
-  $("#snakeStartBtn").on("click", function (event) {
+  $("#snake-start-btn").on("click", function (event) {
     gameBoardCtx.clearRect(0, 0, gameBoard.width, gameBoard.height);
     $(this).addClass("d-none");
-    $("#snakeScore").removeClass("d-none");
+    $("#snake-score").removeClass("d-none");
     resetSnake();
   })
 
   function resetSnake(){
-    $("#snakeScoreHeading").removeClass("d-none");
+    $("#snake-game-over").addClass("d-none");
+    $("#snake-score-heading").removeClass("d-none");
     score = 0;
-    $("#snakeScore").text(score);
+    $("#snake-score").text(score);
     // Reset snake's starting position
     snake = [];
     let defaultX = gameBoard.width / 2;
@@ -151,10 +152,9 @@
 
 
   function startSnake(){
-    if(gameOver() || !$("#snakeModal").hasClass("show")){
-      console.log("DOne");
-      if($("#snakeModal").hasClass("show")){
           // TODO add game over to the screen and "Play again" button.
+    if(gameOver() || !$("#snake-modal").hasClass("show")){
+      if($("#snake-modal").hasClass("show")){
       }
     }
     else{
@@ -205,7 +205,7 @@
       foodMap.get(head.x).delete(head.y);
       createFood();
       score++;
-      $("#snakeScore").text(score);
+      $("#snake-score").text(score);
     }
     else{
       snake.pop();
