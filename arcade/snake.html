@@ -114,6 +114,7 @@
   const BOARD_BACKGROUND = "white";
   const BOARD_BORDER = "black";
   const PIXEL_LENGTH = 10;
+  const MAX_FOOD = 5;
   const gameBoard = document.getElementById("game-canvas");
   const gameBoardCtx = gameBoard.getContext("2d");
   let snake;
@@ -175,11 +176,12 @@
       }
     }
     else{
-      if(foodMap.size < 1){
+      // Randomly add food at different timings
+      if(foodMap.size < 1 || (Math.random() < (0.12 / foodMap.size) && foodMap.size <= MAX_FOOD)){
         createFood();
       }
       clearBoard();
-      // TODO Randomly add food at different timings
+
       for(let foodX of foodMap.keys()){
         for(let foodY of foodMap.get(foodX)){
           drawFood(foodX, foodY);
