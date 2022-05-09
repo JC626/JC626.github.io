@@ -20,11 +20,11 @@
   <link href="../css/bootstrap.css" rel="stylesheet" />
   <link href="../css/style.css" rel="stylesheet" />
   <style>
-    #game-canvas {
+    #snake-canvas {
       position: absolute;
     }
 
-    #canvas-container {
+    #snake-canvas-container {
       position: relative;
       width: 400px;
       height: 400px;
@@ -90,8 +90,8 @@
               <p>Use the arrow keys to turn your snake so you can eat lots of fruit. <br> If you touch the walls (or eat yourself), its game over!</p>
             </div>
             <div class="d-flex justify-content-center">
-              <div id="canvas-container">
-                <canvas id="game-canvas" width="400" height="400">
+              <div id="snake-canvas-container">
+                <canvas id="snake-canvas" width="400" height="400" tabindex="1">
                 </canvas>
                 <div id="snake-game-over" class="d-none">
                   <h5>Game over!</h5>
@@ -115,8 +115,8 @@
   const BOARD_BORDER = "black";
   const PIXEL_LENGTH = 10;
   const MAX_FOOD = 5;
-  const gameBoard = document.getElementById("game-canvas");
-  const gameBoardCtx = gameBoard.getContext("2d");
+  const snakeBoard = document.getElementById("snake-canvas");
+  const snakeBoardCtx = snakeBoard.getContext("2d");
   let snake;
   let foodMap;
   let numFood;
@@ -124,35 +124,44 @@
   let dx;
   let dy;
 
-  let score = 0;
+  let snakeScore;
 
-  $("#open-snake-btn").on("click", function(){
-    $("#arcade-modal").modal("hide");
-    $("#snake-modal").modal("show");
-    // Show default state
-    $("#snake-score-heading").addClass("d-none");
-    $("#snake-game-over").addClass("d-none");
-    $("#snake-start-btn").removeClass("d-none");
-    gameBoardCtx.clearRect(0, 0, gameBoard.width, gameBoard.height);
+  $(function(){
+    setupSnake();
   })
 
-  $("#snake-start-btn").on("click", function (event) {
-    gameBoardCtx.clearRect(0, 0, gameBoard.width, gameBoard.height);
-    $(this).addClass("d-none");
-    $("#snake-score").removeClass("d-none");
-    resetSnake();
-  })
+  function setupSnake(){
+    $("#open-snake-btn").on("click", function(){
+      $("#arcade-modal").modal("hide");
+      $("#snake-modal").modal("show");
+      // Show default state
+      $("#snake-score-heading").addClass("d-none");
+      $("#snake-game-over").addClass("d-none");
+      $("#snake-start-btn").removeClass("d-none");
+      snakeBoardCtx.clearRect(0, 0, snakeBoard.width, snakeBoard.height);
+    })
+
+    $("#snake-start-btn").on("click", function (event) {
+      snakeBoardCtx.clearRect(0, 0, snakeBoard.width, snakeBoard.height);
+      $(this).addClass("d-none");
+      $("#snake-score").removeClass("d-none");
+      resetSnake();
+    })
+
+    snakeBoard.addEventListener("keydown", changeSnakeDirection);
+  }
+
 
   function resetSnake(){
     $("#snake-game-over").addClass("d-none");
     $("#snake-score-heading").removeClass("d-none");
-    score = 0;
-    $("#snake-score").text(score);
+    snakeScore = 0;
     numFood = 0;
+    $("#snake-score").text(snakeScore);
     // Reset snake's starting position
     snake = [];
-    let defaultX = gameBoard.width / 2;
-    let defaultY = gameBoard.width / 2;
+    let defaultX = snakeBoard.width / 2;
+    let defaultY = snakeBoard.width / 2;
     for(let i=0; i < 5; i++){
       snake.push({x: defaultX - i * PIXEL_LENGTH, y: defaultY});
     }
@@ -173,9 +182,9 @@
     if(gameOver() || !$("#snake-modal").hasClass("show")){
       if($("#snake-modal").hasClass("show")){
         $("#snake-game-over").removeClass("d-none");
-        gameBoardCtx.globalAlpha = 0.1;
-        gameBoardCtx.fillStyle = "grey";
-        gameBoardCtx.fillRect(0, 0, gameBoard.width, gameBoard.height);
+        snakeBoardCtx.globalAlpha = 0.1;
+        snakeBoardCtx.fillStyle = "grey";
+        snakeBoardCtx.fillRect(0, 0, snakeBoard.width, snakeBoard.height);
       }
     }
     else{
@@ -196,27 +205,25 @@
     }
   }
 
-  function drawSnakePart(snakePart) {
-    gameBoardCtx.fillStyle = "lightblue";
-    gameBoardCtx.strokestyle = "darkblue";
-    gameBoardCtx.fillRect(snakePart.x, snakePart.y, PIXEL_LENGTH, PIXEL_LENGTH);
-    gameBoardCtx.strokeRect(snakePart.x, snakePart.y, PIXEL_LENGTH, PIXEL_LENGTH);
-  }
-
   function drawSnake() {
-    snake.forEach(drawSnakePart);
+    snake.forEach(function drawSnakePart(snakePart){
+      snakeBoardCtx.fillStyle = "lightblue";
+      snakeBoardCtx.strokestyle = "darkblue";
+      snakeBoardCtx.fillRect(snakePart.x, snakePart.y, PIXEL_LENGTH, PIXEL_LENGTH);
+      snakeBoardCtx.strokeRect(snakePart.x, snakePart.y, PIXEL_LENGTH, PIXEL_LENGTH);
+    });
   }
 
   function clearBoard() {
-    gameBoardCtx.globalAlpha = 1;
+    snakeBoardCtx.globalAlpha = 1;
     //  Select the colour to fill the drawing
-    gameBoardCtx.fillStyle = BOARD_BACKGROUND;
-    //  Select the colour for the border of the gameBoard
-    gameBoardCtx.strokestyle = BOARD_BORDER;
-    // Draw a "filled" rectangle to cover the entire gameBoard
-    gameBoardCtx.fillRect(0, 0, gameBoard.width, gameBoard.height);
-    // Draw a "border" around the entire gameBoard
-    gameBoardCtx.strokeRect(0, 0, gameBoard.width, gameBoard.height);
+    snakeBoardCtx.fillStyle = BOARD_BACKGROUND;
+    //  Select the colour for the border of the snakeBoard
+    snakeBoardCtx.strokestyle = BOARD_BORDER;
+    // Draw a "filled" rectangle to cover the entire snakeBoard
+    snakeBoardCtx.fillRect(0, 0, snakeBoard.width, snakeBoard.height);
+    // Draw a "border" around the entire snakeBoard
+    snakeBoardCtx.strokeRect(0, 0, snakeBoard.width, snakeBoard.height);
   }
 
   function moveSnake(){
@@ -230,18 +237,15 @@
       }
       numFood--;
       createFood();
-      score++;
-      $("#snake-score").text(score);
+      snakeScore++;
+      $("#snake-score").text(snakeScore);
     }
     else{
       snake.pop();
     }
   }
 
-
-  document.addEventListener("keydown", changeDirection)
-
-  function changeDirection(event){
+  function changeSnakeDirection(event){
      const LEFT_KEY = 37;
      const RIGHT_KEY = 39;
      const UP_KEY = 38;
@@ -282,9 +286,9 @@
       }
     }
     const hitLeftWall = snake[0].x < 0;
-    const hitRightWall = snake[0].x >= gameBoard.width - PIXEL_LENGTH;
+    const hitRightWall = snake[0].x >= snakeBoard.width - PIXEL_LENGTH;
     const hitTopWall = snake[0].y < 0;
-    const hitBottomWall = snake[0].y >= gameBoard.height - PIXEL_LENGTH;
+    const hitBottomWall = snake[0].y >= snakeBoard.height - PIXEL_LENGTH;
 
     return hitLeftWall ||  hitRightWall || hitTopWall || hitBottomWall;
   }
@@ -294,8 +298,8 @@
   }
 
   function createFood(){
-   let foodX = createCoordinate(0, gameBoard.width - PIXEL_LENGTH);
-   let foodY = createCoordinate(0, gameBoard.height - PIXEL_LENGTH);
+   let foodX = createCoordinate(0, snakeBoard.width - PIXEL_LENGTH);
+   let foodY = createCoordinate(0, snakeBoard.height - PIXEL_LENGTH);
 
    let hasAteFood;
    snake.forEach(function snakeAteFood(part) {
@@ -321,11 +325,12 @@
    return !hasAteFood;
   }
 
+
   function drawFood(x, y){
-      gameBoardCtx.fillStyle = "lightgreen";
-      gameBoardCtx.strokestyle = "darkgreen";
-      gameBoardCtx.fillRect(x, y, PIXEL_LENGTH, PIXEL_LENGTH);
-      gameBoardCtx.strokeRect(x, y, PIXEL_LENGTH, PIXEL_LENGTH);
+      snakeBoardCtx.fillStyle = "lightgreen";
+      snakeBoardCtx.strokestyle = "darkgreen";
+      snakeBoardCtx.fillRect(x, y, PIXEL_LENGTH, PIXEL_LENGTH);
+      snakeBoardCtx.strokeRect(x, y, PIXEL_LENGTH, PIXEL_LENGTH);
   }
 
 </script>
