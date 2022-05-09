@@ -119,6 +119,7 @@
   const gameBoardCtx = gameBoard.getContext("2d");
   let snake;
   let foodMap;
+  let numFood;
 
   let dx;
   let dy;
@@ -147,6 +148,7 @@
     $("#snake-score-heading").removeClass("d-none");
     score = 0;
     $("#snake-score").text(score);
+    numFood = 0;
     // Reset snake's starting position
     snake = [];
     let defaultX = gameBoard.width / 2;
@@ -178,7 +180,7 @@
     }
     else{
       // Randomly add food at different timings
-      if(foodMap.size < 1 || (Math.random() < (0.12 / foodMap.size) && foodMap.size <= MAX_FOOD)){
+      if(numFood < 1 || (Math.random() < (0.12 / numFood) && numFood < MAX_FOOD)){
         createFood();
       }
       clearBoard();
@@ -223,6 +225,10 @@
     // Snake has eaten food
     if(foodMap.has(head.x) && foodMap.get(head.x).has(head.y)){
       foodMap.get(head.x).delete(head.y);
+      if(foodMap.get(head.x).size === 0){
+        foodMap.delete(head.x);
+      }
+      numFood--;
       createFood();
       score++;
       $("#snake-score").text(score);
@@ -300,12 +306,17 @@
    let foodSet = foodMap.get(foodX) || new Set();
    if(hasAteFood){
       if(foodSet.has(foodY)){
+        numFood--;
         foodSet.delete(foodY);
+        if(foodSet.size === 0){
+          foodMap.delete(foodX);
+        }
       }
    }
-   else{
+   else if(numFood < MAX_FOOD){
      foodSet.add(foodY);
      foodMap.set(foodX, foodSet);
+     numFood++;
    }
    return !hasAteFood;
   }
