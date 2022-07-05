@@ -155,7 +155,7 @@ let SnakeGame = class {
   }
 
   changeSnakeDirection(event) {
-    console.log(this);
+    event.preventDefault();
     const keyPressed = event.keyCode;
     const goingUp = this.dy === -SnakeGame.PIXEL_LENGTH;
     const goingDown = this.dy === SnakeGame.PIXEL_LENGTH;
