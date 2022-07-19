@@ -1,6 +1,11 @@
+
 const SnakeGame = class {
   static BOARD_BACKGROUND = "white";
   static BOARD_BORDER = "black";
+  static SNAKE_COLOUR = "lightblue";
+  static SNAKE_BORDER = "darkblue";
+  static FOOD_COLOUR = "lightgreen";
+  static FOOD_BORDER = "darkgreen";
   static PIXEL_LENGTH = 10;
   static MAX_FOOD = 5;
 
@@ -156,8 +161,8 @@ const SnakeGame = class {
   drawSnake() {
     const parent = this;
     this.snake.forEach(function drawSnakePart(snakePart) {
-      parent.snakeCtx.fillStyle = "lightblue";
-      parent.snakeCtx.strokestyle = "darkblue";
+      parent.snakeCtx.fillStyle = SnakeGame.SNAKE_COLOUR;
+      parent.snakeCtx.strokestyle = SnakeGame.SNAKE_BORDER;
       parent.snakeCtx.fillRect(
           snakePart.x,
           snakePart.y,
@@ -330,8 +335,8 @@ const SnakeGame = class {
    * @param {number} y Y axis of where to draw food relative to the board
    */
   drawFood(x, y) {
-    this.snakeCtx.fillStyle = "lightgreen";
-    this.snakeCtx.strokestyle = "darkgreen";
+    this.snakeCtx.fillStyle = SnakeGame.FOOD_COLOUR;
+    this.snakeCtx.strokestyle = SnakeGame.FOOD_BORDER;
     this.snakeCtx.fillRect(
         x,
         y,
