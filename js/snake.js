@@ -1,4 +1,4 @@
-let SnakeGame = class {
+const SnakeGame = class {
   static BOARD_BACKGROUND = "white";
   static BOARD_BORDER = "black";
   static PIXEL_LENGTH = 10;
@@ -22,15 +22,22 @@ let SnakeGame = class {
 
   canvasID;
 
-  // FIXME need a bunch of IDs to prepare the game?
+  /**
+   * Create a new game of Snake.
+   * @param {Number} canvasID ID of the Canvas element
+   */
   constructor(canvasID) {
     this.canvasID = canvasID;
     this.snakeBoard = document.getElementById(canvasID);
     this.snakeCtx = this.snakeBoard.getContext("2d");
   }
 
+  /**
+   * Setup the snake game by registering the event listeners that initiate
+   * Snake.
+   */
   setupGame() {
-    let parent = this;
+    const parent = this;
     $("#open-snake-btn").on("click", function() {
       $("#arcade-modal").modal("hide");
       $("#snake-modal").modal("show");
@@ -38,19 +45,36 @@ let SnakeGame = class {
       $("#snake-score-heading").addClass("d-none");
       $("#snake-game-over").addClass("d-none");
       $("#snake-start-btn").removeClass("d-none");
-      parent.snakeCtx.clearRect(0, 0, parent.snakeBoard.width, parent.snakeBoard.height);
-    })
+      parent.snakeCtx.clearRect(
+          0,
+          0,
+          parent.snakeBoard.width,
+          parent.snakeBoard.height,
+      );
+    });
     $("#snake-start-btn").on("click", function(event) {
-      parent.snakeCtx.clearRect(0, 0, parent.snakeBoard.width, parent.snakeBoard.height);
-      $(this).addClass("d-none");
+      parent.snakeCtx.clearRect(
+          0,
+          0,
+          parent.snakeBoard.width,
+          parent.snakeBoard.height,
+      );
+      $("#snake-start-btn").addClass("d-none");
       $("#snake-score").removeClass("d-none");
       parent.resetSnake();
-    })
+    });
 
-    parent.snakeBoard.addEventListener("keydown", parent.changeSnakeDirection.bind(this));
+    parent.snakeBoard.addEventListener(
+        "keydown",
+        parent.changeSnakeDirection.bind(this),
+    );
   }
 
-
+  /**
+   * Reset the state of the snake game to its initial state.
+   * Initial state is where the score is 0, snake starts at the center of the
+   * board moving right and no food is on the board.
+   */
   resetSnake() {
     $("#snake-game-over").addClass("d-none");
     $("#snake-score-heading").removeClass("d-none");
@@ -59,13 +83,13 @@ let SnakeGame = class {
     $("#snake-score").text(this.snakeScore);
     // Reset snake's starting position
     this.snake = [];
-    let defaultX = this.snakeBoard.width / 2;
-    let defaultY = this.snakeBoard.width / 2;
+    const defaultX = this.snakeBoard.width / 2;
+    const defaultY = this.snakeBoard.width / 2;
 
     for (let i = 0; i < 5; i++) {
       this.snake.push({
         x: defaultX - i * SnakeGame.PIXEL_LENGTH,
-        y: defaultY
+        y: defaultY,
       });
     }
     this.foodMap = new Map();
@@ -76,50 +100,78 @@ let SnakeGame = class {
     this.clearBoard();
     this.snakeBoard.focus();
     this.drawSnake();
-    let parent = this;
+    const parent = this;
     setTimeout(function() {
-      setTimeout(parent.startSnake.bind(parent), 100);
-    }, 100)
+      setTimeout(parent.runSnake.bind(parent), 100);
+    }, 100);
   }
 
-
-  startSnake() {
+  /**
+   * Run the snake game by updating what is shown on the board until
+   * the game is over or the board is hidden (as the modal disappeared).
+   */
+  runSnake() {
     if (this.gameOver() || !$("#snake-modal").hasClass("show")) {
       if ($("#snake-modal").hasClass("show")) {
         $("#snake-game-over").removeClass("d-none");
         this.snakeCtx.globalAlpha = 0.1;
         this.snakeCtx.fillStyle = "grey";
-        this.snakeCtx.fillRect(0, 0, this.snakeBoard.width, this.snakeBoard.height);
+        this.snakeCtx.fillRect(
+            0,
+            0,
+            this.snakeBoard.width,
+            this.snakeBoard.height,
+        );
       }
     }
     else {
       // Randomly add food at different timings
-      if (this.numFood < 1 || (Math.random() < (0.12 / this.numFood) && this.numFood < SnakeGame.MAX_FOOD)) {
+      if (
+        this.numFood < 1 ||
+        (Math.random() < 0.12 / this.numFood &&
+          this.numFood < SnakeGame.MAX_FOOD)
+      ) {
         this.createFood();
       }
       this.clearBoard();
 
-      for (let foodX of this.foodMap.keys()) {
-        for (let foodY of this.foodMap.get(foodX)) {
+      for (const foodX of this.foodMap.keys()) {
+        for (const foodY of this.foodMap.get(foodX)) {
           this.drawFood(foodX, foodY);
         }
       }
       this.moveSnake();
       this.drawSnake();
-      setTimeout(this.startSnake.bind(this), 100);
+      setTimeout(this.runSnake.bind(this), 100);
     }
   }
 
+  /**
+   * Draw the snake on the board.
+   */
   drawSnake() {
-    let parent = this;
+    const parent = this;
     this.snake.forEach(function drawSnakePart(snakePart) {
       parent.snakeCtx.fillStyle = "lightblue";
       parent.snakeCtx.strokestyle = "darkblue";
-      parent.snakeCtx.fillRect(snakePart.x, snakePart.y, SnakeGame.PIXEL_LENGTH, SnakeGame.PIXEL_LENGTH);
-      parent.snakeCtx.strokeRect(snakePart.x, snakePart.y, SnakeGame.PIXEL_LENGTH, SnakeGame.PIXEL_LENGTH);
+      parent.snakeCtx.fillRect(
+          snakePart.x,
+          snakePart.y,
+          SnakeGame.PIXEL_LENGTH,
+          SnakeGame.PIXEL_LENGTH,
+      );
+      parent.snakeCtx.strokeRect(
+          snakePart.x,
+          snakePart.y,
+          SnakeGame.PIXEL_LENGTH,
+          SnakeGame.PIXEL_LENGTH,
+      );
     });
   }
 
+  /**
+   * Clear all objects on the board.
+   */
   clearBoard() {
     this.snakeCtx.globalAlpha = 1;
     //  Select the colour to fill the drawing
@@ -129,13 +181,21 @@ let SnakeGame = class {
     // Draw a "filled" rectangle to cover the entire snakeBoard
     this.snakeCtx.fillRect(0, 0, this.snakeBoard.width, this.snakeBoard.height);
     // Draw a "border" around the entire snakeBoard
-    this.snakeCtx.strokeRect(0, 0, this.snakeBoard.width, this.snakeBoard.height);
+    this.snakeCtx.strokeRect(
+        0,
+        0,
+        this.snakeBoard.width,
+        this.snakeBoard.height,
+    );
   }
 
+  /**
+   * Move snake by one game pixel based on the direction it is moving towards.
+   */
   moveSnake() {
-    let head = {
+    const head = {
       x: this.snake[0].x + this.dx,
-      y: this.snake[0].y + this.dy
+      y: this.snake[0].y + this.dy,
     };
     this.snake.unshift(head);
     // Snake has eaten food
@@ -154,6 +214,11 @@ let SnakeGame = class {
     }
   }
 
+  /**
+   * Determine the direction the snake is travelling based on the user's
+   * keyboard input.
+   * @param {Event} event An event triggered by a user's key press
+   */
   changeSnakeDirection(event) {
     event.preventDefault();
     const keyPressed = event.keyCode;
@@ -180,28 +245,56 @@ let SnakeGame = class {
     }
   }
 
+  /**
+   * Determine whether the game is over and should be stopped.
+   * @return {boolean} Whether the game is over
+   */
   gameOver() {
     for (let i = 4; i < this.snake.length; i++) {
       // Has the snake collided?
-      if (this.snake[i].x === this.snake[0].x && this.snake[i].y === this.snake[0].y) {
+      if (
+        this.snake[i].x === this.snake[0].x &&
+        this.snake[i].y === this.snake[0].y
+      ) {
         return true;
       }
     }
     const hitLeftWall = this.snake[0].x < 0;
-    const hitRightWall = this.snake[0].x >= this.snakeBoard.width - SnakeGame.PIXEL_LENGTH;
+    const hitRightWall =
+      this.snake[0].x >= this.snakeBoard.width - SnakeGame.PIXEL_LENGTH;
     const hitTopWall = this.snake[0].y < 0;
-    const hitBottomWall = this.snake[0].y >= this.snakeBoard.height - SnakeGame.PIXEL_LENGTH;
+    const hitBottomWall =
+      this.snake[0].y >= this.snakeBoard.height - SnakeGame.PIXEL_LENGTH;
 
     return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
   }
 
+  /**
+   * Create a random coordinate between the min and max values (inclusive).
+   * @param {number} min Minimum boundary value
+   * @param {number} max Maximum boundary value
+   * @return {number} A coordinate.
+   */
   createCoordinate(min, max) {
-    return Math.round((Math.random() * (max - min) + min) / SnakeGame.PIXEL_LENGTH) * SnakeGame.PIXEL_LENGTH;
+    return (
+      Math.round((Math.random() * (max - min) + min) / SnakeGame.PIXEL_LENGTH) *
+      SnakeGame.PIXEL_LENGTH
+    );
   }
 
+  /**
+   * Add new food to the game board.
+   * @return {boolean} Whether food has been added to the game or not.
+   */
   createFood() {
-    let foodX = this.createCoordinate(0, this.snakeBoard.width - SnakeGame.PIXEL_LENGTH);
-    let foodY = this.createCoordinate(0, this.snakeBoard.height - SnakeGame.PIXEL_LENGTH);
+    const foodX = this.createCoordinate(
+        0,
+        this.snakeBoard.width - SnakeGame.PIXEL_LENGTH,
+    );
+    const foodY = this.createCoordinate(
+        0,
+        this.snakeBoard.height - SnakeGame.PIXEL_LENGTH,
+    );
 
     let hasAteFood;
     this.snake.forEach(function snakeAteFood(part) {
@@ -209,7 +302,7 @@ let SnakeGame = class {
         hasAteFood = createFood();
       }
     });
-    let foodSet = this.foodMap.get(foodX) || new Set();
+    const foodSet = this.foodMap.get(foodX) || new Set();
     if (hasAteFood) {
       if (foodSet.has(foodY)) {
         numFood--;
@@ -227,11 +320,25 @@ let SnakeGame = class {
     return !hasAteFood;
   }
 
-
+  /**
+   * Draw food onto the snake board.
+   * @param {number} x X axis of where to draw food relative to the board
+   * @param {number} y Y axis of where to draw food relative to the board
+   */
   drawFood(x, y) {
     this.snakeCtx.fillStyle = "lightgreen";
     this.snakeCtx.strokestyle = "darkgreen";
-    this.snakeCtx.fillRect(x, y, SnakeGame.PIXEL_LENGTH, SnakeGame.PIXEL_LENGTH);
-    this.snakeCtx.strokeRect(x, y, SnakeGame.PIXEL_LENGTH, SnakeGame.PIXEL_LENGTH);
+    this.snakeCtx.fillRect(
+        x,
+        y,
+        SnakeGame.PIXEL_LENGTH,
+        SnakeGame.PIXEL_LENGTH,
+    );
+    this.snakeCtx.strokeRect(
+        x,
+        y,
+        SnakeGame.PIXEL_LENGTH,
+        SnakeGame.PIXEL_LENGTH,
+    );
   }
-}
+};
