@@ -66,6 +66,7 @@ const SnakeGame = class {
 
     parent.snakeBoard.addEventListener(
         "keydown",
+        // Bind so we can reference fields from snakeGame
         parent.changeSnakeDirection.bind(this),
     );
   }
@@ -101,7 +102,9 @@ const SnakeGame = class {
     this.snakeBoard.focus();
     this.drawSnake();
     const parent = this;
+    // Only start snake game after a delay of 100ms
     setTimeout(function() {
+      // Bind so we can reference fields from snakeGame
       setTimeout(parent.runSnake.bind(parent), 100);
     }, 100);
   }
@@ -142,6 +145,7 @@ const SnakeGame = class {
       }
       this.moveSnake();
       this.drawSnake();
+      // Bind so we can reference fields from snakeGame
       setTimeout(this.runSnake.bind(this), 100);
     }
   }

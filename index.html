@@ -475,6 +475,7 @@
     $(function(){
       let snakeGame = new SnakeGame("snake-canvas");
       snakeGame.setupGame();
+      // Bind so we can reference fields from snakeGame in resetSnake()
       $('#reset-snake-btn').on("click", snakeGame.resetSnake.bind(snakeGame))
     })
 
