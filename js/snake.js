@@ -268,10 +268,10 @@ const SnakeGame = class {
         return true;
       }
     }
-    const hitLeftWall = this.snake[0].x < 0;
+    const hitLeftWall = this.snake[0].x < SnakeGame.PIXEL_LENGTH;
     const hitRightWall =
       this.snake[0].x >= this.snakeBoard.width - SnakeGame.PIXEL_LENGTH;
-    const hitTopWall = this.snake[0].y < 0;
+    const hitTopWall = this.snake[0].y < SnakeGame.PIXEL_LENGTH;
     const hitBottomWall =
       this.snake[0].y >= this.snakeBoard.height - SnakeGame.PIXEL_LENGTH;
 
