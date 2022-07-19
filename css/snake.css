@@ -1,0 +1,11 @@
+#snake-canvas-container {
+  position: relative;
+  width: 400px;
+  height: 400px;
+}
+
+#snake-game-over {
+  position: absolute;
+  top: 30%;
+  left: 146px;
+}
